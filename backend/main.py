@@ -1,6 +1,9 @@
+import os
 import joblib
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from sklearn.tree import _tree
 
 app = FastAPI()
@@ -76,3 +79,11 @@ def get_question(node_id: int):
 @app.get("/start")
 def start():
     return build_node(0)
+
+frontend_dir = os.path.join(os.path.dirname(__file__), "../frontend/build")
+if os.path.exists(frontend_dir):
+    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+
+    @app.get("/{full_path:path}")
+    async def serve_react_app(full_path: str):
+        return FileResponse(os.path.join(frontend_dir, "index.html"))
