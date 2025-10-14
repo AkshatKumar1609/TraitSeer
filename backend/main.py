@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 # Load model + feature names
-loaded = joblib.load('model.pkl')
+loaded = joblib.load('backend/model.pkl')
 if isinstance(loaded, tuple):
     clf, feature_names = loaded
 else:
